@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+
+{% block title %}users table{% endblock %}
+
+{% block extra_head %}
+
+<style>
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/myfilescss.css' %}" />
+</style>
+
+{% endblock %}
+
+
+{% block content %}
+
+    <div class="container">
+        <h1 style="color: #d8d7d7;">My Files</h1>
+        {% if files and not msg %}
+        <table class="table">
+            <tr>
+                <th>File Name</th>
+                <th>Link</th>
+                <th>Delete</th>
+            </tr>
+            {% for file in files %}
+            <tr>
+                <td>{{ file.title }}</td>
+                <td><a href="{% url 'viewfile' %}?id={{file.id}}">Link</a></td>
+                <td>
+                    <form method="post" action="{% url 'delete_file' file.id %}">
+                        {% csrf_token %}
+                        <button type="submit" style="border: none; background-color: transparent">
+                            <i class="fa fa-trash-o" style="font-size:26px;color:red; cursor: pointer;"></i>
+                        </button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+            <form method="get" action="">
+                <label for="itemsPerPage">Items per page:</label>
+                <select id="itemsPerPage" name="itemsPerPage" onchange="this.form.submit()">
+                    <option value="5" {% if items_per_page == 5 %}selected{% endif %}>5</option>
+                    <option value="10" {% if items_per_page == 10 %}selected{% endif %}>10</option>
+                    <option value="15" {% if items_per_page == 15 %}selected{% endif %}>15</option>
+                    <option value="20" {% if items_per_page == 20 %}selected{% endif %}>20</option>
+                    <option value="25" {% if items_per_page == 25 %}selected{% endif %}>25</option>
+                    <option value="50" {% if items_per_page == 50 %}selected{% endif %}>50</option>
+                    <option value="75" {% if items_per_page == 75 %}selected{% endif %}>75</option>
+                    <option value="100" {% if items_per_page == 100 %}selected{% endif %}>100</option>
+                </select>
+            </form>
+
+            <nav aria-label="Page navigation">
+                <ul class="pagination justify-content-center">
+                    {% if files.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ files.previous_page_number }}&itemsPerPage={{ items_per_page }}" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                            <span class="sr-only">Previous</span>
+                        </a>
+                    </li>
+                    {% endif %}
+
+                    {% for i in files.paginator.page_range %}
+                    <li class="page-item {% if files.number == i %}active{% endif %}">
+                        <a class="page-link" href="?page={{ i }}&itemsPerPage={{ items_per_page }}">{{ i }}</a>
+                    </li>
+                    {% endfor %}
+
+                    {% if files.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ files.next_page_number }}&itemsPerPage={{ items_per_page }}" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                            <span class="sr-only">Next</span>
+                        </a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+        {% elif msg %}
+            <p>{{msgcontent}}</p>
+        {% else %}
+            <p>No files uploaded yet.</p>
+        {% endif %}
+        
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+{% endblock %}

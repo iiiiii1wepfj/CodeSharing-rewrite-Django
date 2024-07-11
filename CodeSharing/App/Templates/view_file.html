@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+
+{% block title %}{% if not error %}{{filename}}{% else %}Error{% endif %}{% endblock %}
+
+{% block extra_head %}
+{% if not error %}
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.27.0/themes/prism.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="http://prismjs.com/themes/prism-okaidia.css" />
+{% endif %}
+{% endblock %}
+
+
+{% block content %}
+{% if not error %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.6.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.6.0/plugins/line-numbers/prism-line-numbers.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.6.0/plugins/autoloader/prism-autoloader.min.js"></script>
+        <script>
+            Prism.plugins.autoloader.languages_path = 'https://cdnjs.cloudflare.com/ajax/libs/prism/1.6.0/components/';
+            Prism.hooks.add('before-highlight', function (env) {
+                env.element.className += ' line-numbers';
+            });
+            async function fetchLanguages(version = `master`) {
+                if (languagesCache.has(version)) {
+                    return languagesCache.get(version);
+                }
+                const url = `https://raw.githubusercontent.com/PrismJS/prism/${version}/components.js`;
+                const response = await fetch(url);
+                const text = await response.text();
+                eval(text);
+                const languages = Object.entries(components.languages).map(
+                    ([code, { title = "None", alias = [] }]) => {
+                        alias = typeof alias === `string` ? [alias] : alias;
+                        return { version, code, title, alias };
+                    }
+                );
+                languagesCache.set(version, languages);
+                return languages;
+            }
+        </script>
+
+    <script>
+    async function fetchLanguages(version = `master`, code = '{{lang}}') {
+                        const url = `https://raw.githubusercontent.com/PrismJS/prism/${version}/components.js`;
+                        const response = await fetch(url);
+                        const text = await response.text();
+                        eval(text);
+                        const languages = Object.entries(components.languages).map(
+                            ([code, { title = "None", alias = [] }]) => {
+                                alias = typeof alias === `string` ? [alias] : alias;
+                                return { version, code, title, alias };
+                            }
+                        );
+
+                        if (code) {
+                            const foundLanguage = languages.find(language => language.code === code);
+                            if (foundLanguage) {
+                                document.getElementById('l').textContent = 'language: '+ foundLanguage.title;
+                            } else {
+                                document.getElementById('l').textContent = 'language: ' + '{{lang}}';
+                            }
+                        }
+
+                        var select = document.getElementById('lang');
+                        languages.forEach(function (language) {
+                            var option = document.createElement('option');
+                            option.value = language.code;
+                            option.textContent = language.title;
+                            select.appendChild(option);
+                        });
+
+                        return languages;
+                    }
+    fetchLanguages()
+    </script>
+
+    <div align="center">
+        <h3>file name: {{filename}}</h3>
+        <h3>file owner: {{username}}</h3>
+        <h3 id = 'l'></h3>
+    </div>
+    <pre><code class={{langclass}}>{{code}}</code></pre>
+    <br></br<br></br><h3>Description: </h3><br></br>
+    <h6><pre>{{description}}</pre></h6>
+    <div><h3><a href="{{commentslink}}">{{commentsnum}} comments</a></h3></div>
+{% else %}
+    <h3 align="center">{{e}}</h3>
+{% endif %}
+{% endblock %}

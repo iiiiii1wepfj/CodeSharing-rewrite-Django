@@ -1,0 +1,7 @@
+import os
+
+mailhost = 'smtp.gmail.com'
+mailport = 587
+mailusetls = True
+mailhostuser = os.getenv('EMAIL_HOST_USER')
+mailhostpassword = os.getenv('EMAIL_HOST_PASSWORD')

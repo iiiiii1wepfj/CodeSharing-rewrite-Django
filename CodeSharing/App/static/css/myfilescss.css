@@ -1,0 +1,38 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f8f9fa;
+}
+
+.container {
+    margin-top: 50px;
+}
+
+h1 {
+    color: #007bff;
+}
+
+.table {
+    margin-top: 20px;
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.table th,
+.table td {
+    padding: 8px;
+    border: 1px solid #dee2e6;
+}
+
+.table th {
+    background-color: #007bff;
+    color: #ffffff;
+    text-align: center;
+}
+
+.table td {
+    text-align: center;
+}
+
+.pagination {
+    margin-top: 20px;
+}

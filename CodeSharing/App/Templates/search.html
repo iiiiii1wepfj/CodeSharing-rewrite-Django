@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+
+{% block title %}search{% endblock %}
+
+{% block extra_head %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/searchcss.css' %}" />
+{% endblock %}
+
+
+{% block content %}
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <form method="get" action="{% url 'search' %}" class="search-form">
+                <div class="input-group">
+                    {{ form.search_input }}
+                    <div class="input-group-append">
+                        <button class="btn btn-primary" type="submit" name="submit"><i class="fas fa-search"></i></button>
+                    </div>
+                </div>
+                {% if displaymsg %}
+                    <h3>{{ msg }}</h3>
+                {% endif %}
+                {% if stsearch and not displaymsg %}
+                    <div class="form-group mt-4">
+                        <label for="pageSizeSelect">number of results to show:</label>
+                        {{ form.page_size }}
+                    </div>
+                {% endif %}
+            </form>
+        </div>
+    </div>
+    {% if not displaymsg %}
+        <div class="row">
+            <div class="col-md-10 offset-md-1">
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover search-results" style="text-align: center;">
+                        <thead>
+                            <tr>
+                                <th>filename</th>
+                                <th>user</th>
+                                <th>link</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for result in stsearch %}
+                            <tr>
+                                <td>{{ result.title }}</td>
+                                <td>{{ result.user.username }}</td>
+                                <td><a href="{% url 'viewfile' %}?id={{ result.pk }}">link</a></td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+    <div class="row">
+        <div class="col-md-6 offset-md-3">
+            {% if stsearch and stsearch.paginator.num_pages > 1 and not displaymsg %}
+                <div class="pagination-container">
+                    <ul class="pagination">
+                        <li class="page-item {% if not stsearch.has_previous %}disabled{% endif %}">
+                            <a class="page-link" href="?search_input={{ form.search_input.value }}&page_size={{ form.page_size.value }}&page={{ stsearch.previous_page_number }}">הקודם</a>
+                        </li>
+                        {% for i in stsearch.paginator.page_range %}
+                        <li class="page-item {% if stsearch.number == i %}active{% endif %}">
+                            <a class="page-link" href="?search_input={{ form.search_input.value }}&page_size={{ form.page_size.value }}&page={{ i }}">{{ i }}</a>
+                        </li>
+                        {% endfor %}
+                        <li class="page-item {% if not stsearch.has_next %}disabled{% endif %}">
+                            <a class="page-link" href="?search_input={{ form.search_input.value }}&page_size={{ form.page_size.value }}&page={{ stsearch.next_page_number }}">הבא</a>
+                        </li>
+                    </ul>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+{% endblock %}

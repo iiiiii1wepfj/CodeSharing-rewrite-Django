@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+
+{% block title %}upload file{% endblock %}
+
+{% block extra_head %}
+
+{% endblock %}
+
+
+{% block content %}
+
+<style>
+  label{
+    color: #d8d7d7;
+  }
+</style>
+
+<div align="center" dir="auto" class=>
+    <form name="fileuploadform" id="fileuploadform" method="post">
+    {% csrf_token %}
+      <div class="row m-auto">
+      <div class="my-5">
+        <div class="form-group row">
+          <label for="title" class="col-sm-2 col-form-label text-right">file name</label>
+          <div class="col-sm-8">
+            <input type="text" class="form-control" id="title" name="title" dir="auto" spellcheck="false" required>
+          </div>
+        </div>
+
+        <div class="form-group row">
+          <label for="lang" class="col-sm-2 col-form-label text-right">language</label>
+          <div class="col-sm-8">
+            <select id="lang" name="lang" class="form-control"></select>
+          </div>
+        </div>
+
+        <div class="form-group row">
+          <label for="info" class="col-sm-2 col-form-label text-right">description</label>
+          <div class="col-sm-8">
+            <textarea class="form-control" id="info" name="info" rows="2" dir="auto"></textarea>
+          </div>
+        </div>
+
+        <div class="form-group row">
+          <label for="content" class="col-sm-2 col-form-label text-right">content</label>
+          <div class="col-sm-8">
+            <textarea class="form-control" id="content" name="content" rows="4" wrap="off" dir="auto" wrap="off" required></textarea>
+          </div>
+        </div>
+
+        <div class="form-group row">
+          <div style="margin-top: 24px;">
+            <button type="submit" name="submit" class="btn btn-primary">upload</button>
+          </div>
+        </div>
+      </div>
+      </div>
+        {% if error %}
+            <h2>{{e}}</h2>
+        {% endif %}
+    </form>
+        <script>
+            const languagesCache = new Map();
+
+
+            async function fetchLanguages(version = `master`) {
+                if (languagesCache.has(version)) {
+                    return languagesCache.get(version);
+                }
+                const url = `https://raw.githubusercontent.com/PrismJS/prism/${version}/components.js`;
+                const response = await fetch(url);
+                const text = await response.text();
+                eval(text);
+                const languages = Object.entries(components.languages).map(
+                    ([code, { title = "None", alias = [] }]) => {
+                        alias = typeof alias === `string` ? [alias] : alias;
+                        return { version, code, title, alias };
+                    }
+                );
+                languagesCache.set(version, languages);
+                var select = document.getElementById('lang');
+                languages.forEach(function (language) {
+                    var option = document.createElement('option');
+                    option.value = language.code;
+                    option.textContent = language.title;
+                    select.appendChild(option);
+                });
+            }
+
+
+            fetchLanguages();
+        </script>
+</div>
+
+{% endblock %}

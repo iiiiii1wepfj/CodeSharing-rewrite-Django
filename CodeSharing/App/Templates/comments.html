@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+
+{% block title %}{% if not error %}comments to {{ file.title }}{% else %}Error{% endif %}{% endblock %}
+
+{% block extra_head %}
+{% if not error %}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+{% endif %}
+{% endblock %}
+
+
+{% block content %}
+
+{% load comment_tags %}
+
+
+<h1 style="color: #d8d7d7;">comments to {{ title }}</h1>
+<h3><a href="{% url 'viewfile' %}?id={{fileid}}">link to the file</a></h3>
+
+{% if user.is_authenticated %}
+    <script>
+    function toggleReplyForm(commentId) {
+        var replyForm = document.getElementById('publishreplyform_' + commentId);
+        replyForm.style.display = replyForm.style.display === 'block' ? 'none' : 'block';
+    }
+    </script>
+    <form id="publishcommentform" method="post" style='margin-bottom: 20px;' dir="auto">
+        {% csrf_token %}
+        <fieldset>
+            <div class="form-floating">
+                <textarea class="form-control" placeholder="content" dir="auto" name="commentcontenttosubmit" id="commentcontenttosubmit" style="height: 100px" required></textarea>
+                <label for="floatingTextarea2">content</label>
+                <!-- <label style="left: auto !important; right: 0; text-align: right;" for="floatingTextarea2">content</label> -->
+            </div>
+            <input type="submit" class="btn btn-primary btn-sm" value="publish comment" style="padding: 5px 10px; border: none; cursor: pointer; margin-top: 5px;"/>
+        </fieldset>
+    </form>
+{% endif %}
+
+{% for comment in comments%}
+    {% if not comment.parentComment %}
+        <div style="background-color: #f0f0f0; padding: 20px; border-radius: 10px; margin-bottom: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+            <div>
+                <div style="display: flex; align-items: center;">
+                    <p style="font-weight: bold; color: #333; margin-bottom: 5px;">{{ comment.user.username }}</p>
+                    {% if comment.user == user or user.is_staff or user == comment.linkedto.user %}
+                        <form method="post" style="margin-left: 10px;">
+                            {% csrf_token %}
+                            <input type="hidden" name="comment_id" value="{{ comment.id }}">
+                            <button type="submit" class="btn btn-link"><i class="fa fa-trash-o" style="font-size:26px;color:red; cursor: pointer;"></i></button>
+                        </form>
+                        {% if comment.user == user %}
+                            <button type="button" onclick="editComment({{ comment.id }}, '{{ comment.comment }}')" class="btn btn-link" data-bs-toggle="modal" data-bs-target="#editModal"><i class="fa fa-pencil" style="font-size:26px"></i></button>
+                        {% endif %}
+                    {% endif %}
+                </div>
+                <p dir="auto" style="font-size: 16px; color: #666; margin-top: 10px;">{{ comment.comment }}</p>
+                {% if user.is_authenticated %}
+                    <button type="button" onclick='toggleReplyForm("{{comment.id}}")' class="btn btn-primary btn-sm" style="margin-bottom: 10px;">click to reply</button></div>
+
+                    <form id="publishreplyform_{{comment.id}}" name="publishreplyform_{{comment.id}}" method="post" style="margin-bottom: 20px; display: none;">
+                        {% csrf_token %}
+                        <fieldset>
+                            <div class="form-floating mb-3">
+                                <textarea class="form-control" placeholder="reply content" dir="auto" name="commentcontenttosubmit" id="commentcontenttosubmit" style="height: 100px" required></textarea>
+                                <label for="commentcontenttosubmit">reply content</label>
+                            </div>
+                            <input type="hidden" name="parentCommentId" id="parentCommentId" value="{{comment.id}}"/>
+                            <input type="submit" class="btn btn-primary btn-sm" name="submit" value="publish comment" style="padding: 5px 10px; border: none; cursor: pointer;"/>
+                        </fieldset>
+                    </form>
+                {% endif %}
+                {% autoescape off %}
+                {% calldisplayreplies comment.id|safe %}
+                {% endautoescape %}
+            </div>
+        </div>
+    {% endif %}
+{% endfor %}
+
+<!-- Edit Comment Modal -->
+<div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="editForm" method="post">
+                {% csrf_token %}
+                <div class="modal-header" dir="auto">
+                    <h1 class="modal-title fs-5" id="editModalLabel" style="flex-grow: 1;">edit comment</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <textarea class="form-control" placeholder="content" id="editContent" name="edit_content" dir="auto" required></textarea>
+                    <!-- <textarea class="form-control" placeholder="content" id="editContent" name="edit_content" dir="auto" style="left: auto !important; right: 0; text-align: right;" required></textarea> -->
+                    <input id="commentId" name="comment_id" type="hidden">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">close</button>
+                    <button type="submit" class="btn btn-primary">edit</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+function editComment(id, content) {
+    document.getElementById('editContent').value = content;
+    document.getElementById('commentId').value = id;
+}
+</script>
+
+{% endblock %}

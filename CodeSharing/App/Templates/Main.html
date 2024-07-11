@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block title %}home{% endblock %}
+
+{% block extra_head %}
+<style>
+        .spaced-btn {
+            margin-right: 5px;
+    }
+</style>
+{% endblock %}
+
+
+{% block content %}
+
+<div class="container mt-5" style="text-align:center;">
+    <h1 style="color: #d8d7d7;">Code Sharing</h1>
+    <a href="{% url 'search' %}"><button type="button" class="btn btn-light spaced-btn">Search</button></a>
+    {% if user.is_authenticated %}
+        <a href="{% url 'my_files' %}"><button type="button" class="btn btn-light spaced-btn">My Files</button></a>
+    {% else %}
+        <a href="{% url 'login' %}"><button type="button" class="btn btn-light space spaced-btn">Login</button></a>
+        <a href="{% url 'signup' %}"><button type="button" class="btn btn-light spaced-btn">Sign Up</button></a>
+    {% endif %}
+</div>
+
+{% endblock %}
