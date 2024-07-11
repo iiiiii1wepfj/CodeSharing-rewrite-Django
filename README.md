@@ -12,7 +12,7 @@ To run this project it is necessary to go through these steps:
     and replace the `SECRET_KEY` in `settings.py`.
 2. Set debug to false in `settings.py`:
 ```
-DEBUG = True
+DEBUG = False
 ```
 3. Change the name of `mailconfig.py.example` to `mailconfig.py` and change the values to your own mail.
 
