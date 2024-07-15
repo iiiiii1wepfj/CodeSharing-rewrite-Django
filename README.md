@@ -9,6 +9,7 @@ To run this project it is necessary to go through these steps:
     secretkey = get_random_secret_key()
     print(secretkey)
     ```
+    or ```python3 gensecuritykey.py```
     and replace the `SECRET_KEY` in `settings.py`.
 2. Set debug to false in `settings.py`:
 ```
