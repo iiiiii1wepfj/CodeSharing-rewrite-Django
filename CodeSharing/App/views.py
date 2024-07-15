@@ -16,6 +16,8 @@ from django.core.exceptions import ValidationError
 from django.core.mail import send_mail
 from django.conf import settings
 import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
 
 # from .commentutils.comments_utils import display_replies
 
@@ -136,73 +138,58 @@ def signupV(request):
             and request.POST["firstname"].strip() != ""
             and request.POST["lastname"].strip() != ""
         ):
-            if len(request.POST["username"]) < 150:
-                if len(request.POST["email"]) < 254:
-                    try:
-                        validate_email(request.POST["email"])
-                    except ValidationError as E:
-                        context = {"error": True, "e": "Enter a valid email address."}
-                        return render(request, "signup.html", context)
-                    if len(request.POST["firstname"]) < 150:
-                        if len(request.POST["lastname"]) < 150:
-                            if (
-                                User.objects.filter(
-                                    username=request.POST["username"]
-                                ).exists()
-                                == False
-                            ):
-                                if (
-                                    User.objects.filter(
-                                        email=request.POST["email"]
-                                    ).exists()
-                                    == False
-                                ):
-                                    user = User.objects.create_user(
-                                        username=request.POST["username"],
-                                        email=request.POST["email"],
-                                        password=request.POST["password"],
-                                        first_name=request.POST["firstname"],
-                                        last_name=request.POST["lastname"],
-                                    )
-                                    user.save()
-                                    login(request, user)
-                                    return redirect("/")
-                                else:
-                                    context = {
-                                        "error": True,
-                                        "e": "The email you selected is not available. Please choose a different one.",
-                                    }
-                                    return render(request, "signup.html", context)
-                            else:
-                                context = {
-                                    "error": True,
-                                    "e": "The username you selected is not available. Please choose a different one.",
-                                }
-                                return render(request, "signup.html", context)
-                        else:
-                            context = {
-                                "error": True,
-                                "e": "The last name can not be longer than 150 characters.",
-                            }
-                            return render(request, "signup.html", context)
-                    else:
-                        context = {
-                            "error": True,
-                            "e": "The first name can not be longer than 150 characters.",
-                        }
-                        return render(request, "signup.html", context)
-                else:
-                    context = {
-                        "error": True,
-                        "e": "The email address can not be longer than 254 characters.",
-                    }
-                    return render(request, "signup.html", context)
-            else:
+            if len(request.POST["username"]) > 150:
                 context = {
                     "error": True,
                     "e": "The username can not be longer than 150 characters.",
                 }
                 return render(request, "signup.html", context)
+            if len(request.POST["email"]) > 254:
+                try:
+                    validate_email(request.POST["email"])
+                except ValidationError as E:
+                    context = {"error": True, "e": "Enter a valid email address."}
+                    return render(request, "signup.html", context)
+            else:
+                context = {
+                    "error": True,
+                    "e": "The email address can not be longer than 254 characters.",
+                }
+                return render(request, "signup.html", context)
+            if len(request.POST["firstname"]) > 150:
+                context = {
+                    "error": True,
+                    "e": "The first name can not be longer than 150 characters.",
+                }
+                return render(request, "signup.html", context)
+            if len(request.POST["lastname"]) > 150:
+                context = {
+                    "error": True,
+                    "e": "The last name can not be longer than 150 characters.",
+                }
+                return render(request, "signup.html", context)
+            if User.objects.filter(username=request.POST["username"]).exists() == True:
+                context = {
+                    "error": True,
+                    "e": "The username you selected is not available. Please choose a different one.",
+                }
+                return render(request, "signup.html", context)
+            if User.objects.filter(email=request.POST["email"]).exists() == True:
+                context = {
+                    "error": True,
+                    "e": "The email you selected is not available. Please choose a different one.",
+                }
+                return render(request, "signup.html", context)
+            user = User.objects.create_user(
+                username=request.POST["username"],
+                email=request.POST["email"],
+                password=request.POST["password"],
+                first_name=request.POST["firstname"],
+                last_name=request.POST["lastname"],
+            )
+            user.save()
+            login(request, user)
+            return redirect("/")
         else:
             context = {
                 "error": True,
@@ -384,9 +371,6 @@ def users_table(request):
 def files_without_comments(request):
     return render(request, 'files_without_comments.html')
 """
-
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
 
 
 def forgot_my_password(request):
