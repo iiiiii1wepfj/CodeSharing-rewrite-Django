@@ -16,6 +16,7 @@ To run this project it is necessary to go through these steps:
 DEBUG = False
 ```
 3. Change the name of `mailconfig.py.example` to `mailconfig.py` and change the values to your own mail.
+4. run ```python3 manage.py migrate```.
 
 ## Credit
 I did this project together with [iii123iii](https://github.com/iii123iii)

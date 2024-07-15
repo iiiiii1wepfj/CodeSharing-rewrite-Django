@@ -422,7 +422,7 @@ def forgot_my_password(request):
                         )
                     msg = f"Password reset code sent to your email.\nThe code is for one time use and will expire in 30 minutes.\nThe code was sent from the following address: {settings.EMAIL_HOST_USER}"
                 except smtplib.SMTPException:
-                    msg = "Failed to send email."
+                    msg = "Failed to send the email."
     context = {"showmsg": showmsg, "msg": msg}
     return render(request, "forgotpass.html", context)
 

@@ -14,14 +14,18 @@
 {% load comment_tags %}
 
 
-<h1 style="color: #d8d7d7;">comments to {{ title }}</h1>
-<h3><a href="{% url 'viewfile' %}?id={{fileid}}">link to the file</a></h3>
+<h1 style="color: #d8d7d7;">Comments to <a href="{% url 'viewfile' %}?id={{fileid}}">{{ title }}</a></h1>
+<br>
 
 {% if user.is_authenticated %}
     <script>
     function toggleReplyForm(commentId) {
         var replyForm = document.getElementById('publishreplyform_' + commentId);
         replyForm.style.display = replyForm.style.display === 'block' ? 'none' : 'block';
+    }
+    function editComment(id, content) {
+        document.getElementById('editContent').value = content;
+        document.getElementById('commentId').value = id;
     }
     </script>
     <form id="publishcommentform" method="post" style='margin-bottom: 20px;' dir="auto">
@@ -102,11 +106,5 @@
     </div>
 </div>
 
-<script>
-function editComment(id, content) {
-    document.getElementById('editContent').value = content;
-    document.getElementById('commentId').value = id;
-}
-</script>
 
 {% endblock %}
