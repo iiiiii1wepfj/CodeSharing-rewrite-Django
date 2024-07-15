@@ -31,7 +31,7 @@
                     <form method="post" action="{% url 'delete_file' file.id %}">
                         {% csrf_token %}
                         <button type="submit" style="border: none; background-color: transparent">
-                            <i class="fa fa-trash-o" style="font-size:26px;color:red; cursor: pointer;"></i>
+                            <i class="fa-regular fa-trash-can" style="font-size:26px;color:red; cursor: pointer;"></i>
                         </button>
                     </form>
                 </td>
@@ -86,8 +86,5 @@
             <p>No files uploaded yet.</p>
         {% endif %}
         
-
-
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
 {% endblock %}

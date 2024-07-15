@@ -20,7 +20,7 @@
                     <li style="list-style-type:none;" class="nav-item">
                         {% if user.is_authenticated %}
                             <div class="container-fluid"><li style="list-style-type:none" class="nav-item-dropdown">
-                            <a class="nav-link dropdown-toogle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fa-solid fa-caret-down"></i>{{ user.username }}</a>
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">{{ user.username }}</a>
                             <ul class="dropdown-menu" style="right: auto; left: auto;">
                                 <li style="list-style-type:none"><a class="dropdown-item" style="text-align: auto;" href="{% url 'upload_file' %}">Upload File</a></li>
                                 <li style="list-style-type:none"><a class="dropdown-item" style="text-align: auto;" href="{% url 'my_files' %}">My Files</a></li>
@@ -42,7 +42,7 @@
             </div>
         </div>
     </nav>
-    
+
     <main>
         {% block content %}{% endblock %}
     </main>

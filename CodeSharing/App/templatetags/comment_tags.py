@@ -37,13 +37,13 @@ def display_replies(comment, request, csrftoken, level):
                     <form method="post" style="margin-left: 10px;">
                         <input type="hidden" name="csrfmiddlewaretoken" value="{csrftoken}"/>
                         <input type="hidden" name="comment_id" value="{reply.id}">
-                        <button type="submit" class="btn btn-link"><i class="fa fa-trash-o" style="font-size:26px;color:red; cursor: pointer;"></i></button>
+                        <button type="submit" class="btn btn-link"><i class="fa-regular fa-trash-can" style="font-size:26px;color:red; cursor: pointer;"></i></button>
                     </form>
                 """
 
             if request.user == reply.user:
                 htmlcode += f"""
-                    <button type="button" onclick="editComment({ reply.id }, '{ reply.comment }')" style="background-color: #f9f9f9; border: none; margin-left: 10px; class="btn btn-link" data-bs-toggle="modal" data-bs-target="#editModal"><i class="fa fa-pencil" style="font-size:26px; color: #0d6efd;"></i></button>
+                    <button type="button" onclick="editComment({ reply.id }, '{ reply.comment }')" style="background-color: #f9f9f9; border: none; margin-left: 10px; class="btn btn-link" data-bs-toggle="modal" data-bs-target="#editModal"><i class="fa-regular fa-pen-to-square" style="font-size:26px; color: #0d6efd;"></i></button>
                 """
             htmlcode += "</div>"
             htmlcode += f"""

@@ -4,7 +4,7 @@
 
 {% block extra_head %}
 {% if not error %}
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
 {% endif %}
 {% endblock %}
 
@@ -47,10 +47,10 @@
                         <form method="post" style="margin-left: 10px;">
                             {% csrf_token %}
                             <input type="hidden" name="comment_id" value="{{ comment.id }}">
-                            <button type="submit" class="btn btn-link"><i class="fa fa-trash-o" style="font-size:26px;color:red; cursor: pointer;"></i></button>
+                            <button type="submit" class="btn btn-link"><i class="fa-regular fa-trash-can" style="font-size:26px;color:red; cursor: pointer;"></i></button>
                         </form>
                         {% if comment.user == user %}
-                            <button type="button" onclick="editComment({{ comment.id }}, '{{ comment.comment }}')" class="btn btn-link" data-bs-toggle="modal" data-bs-target="#editModal"><i class="fa fa-pencil" style="font-size:26px"></i></button>
+                            <button type="button" onclick="editComment({{ comment.id }}, '{{ comment.comment }}')" class="btn btn-link" data-bs-toggle="modal" data-bs-target="#editModal"><i class="fa-regular fa-pen-to-square" style="font-size:26px"></i></button>
                         {% endif %}
                     {% endif %}
                 </div>
