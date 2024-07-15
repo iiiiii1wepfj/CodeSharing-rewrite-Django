@@ -144,7 +144,7 @@ def signupV(request):
                     "e": "The username can not be longer than 150 characters.",
                 }
                 return render(request, "signup.html", context)
-            if len(request.POST["email"]) > 254:
+            if len(request.POST["email"]) < 254:
                 try:
                     validate_email(request.POST["email"])
                 except ValidationError as E:
