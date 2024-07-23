@@ -11,9 +11,10 @@ To run this project it is necessary to go through these steps:
     ```
     or ```python3 gensecuritykey.py```
     and replace the `SECRET_KEY` in `settings.py`.
-2. Set debug to false in `settings.py`:
+2. Set debug to false in `settings.py` and add allowed hosts:
 ```
 DEBUG = False
+ALLOWED_HOSTS = [...]
 ```
 3. Change the name of `mailconfig.py.example` to `mailconfig.py` and change the values to your own mail.
 4. run ```python3 manage.py migrate```.

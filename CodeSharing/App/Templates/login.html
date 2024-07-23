@@ -23,6 +23,7 @@
                         <div class="text-center" style="margin-top: 24px;">
                             <button type="submit" name="submit" class="btn btn-primary">login</button>
                         </div>
+                        <input type="hidden" name="next" value="{{ request.GET.next }}">
                         {% if error %}
                             <h5>{{e}}</h5>
                         {% endif %}

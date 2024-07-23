@@ -7,6 +7,7 @@ from django.contrib.auth import logout, authenticate, login
 from django.core.paginator import Paginator, EmptyPage
 from django.shortcuts import render, redirect, HttpResponse, get_object_or_404
 from django.http import HttpResponseForbidden
+from django.utils.http import url_has_allowed_host_and_scheme
 from .models import File, Comment, ResetCodes, User
 from .forms import SearchForm
 from .utils.resetcodesutils import autodelcodes
@@ -90,6 +91,21 @@ def search(request):
         return render(request, "search.html", context)
 
 
+def get_success_url(request):
+    redirect_to = request.POST.get("next", request.GET.get("next")) or "/"
+    url_is_safe = url_has_allowed_host_and_scheme(
+        url=redirect_to,
+        allowed_hosts={request.get_host()},
+        require_https=request.is_secure(),
+    )
+    if url_is_safe:
+        return redirect_to
+    else:
+        if request.POST["next"]:
+            return resolve_url(request.POST["next"])
+        raise ImproperlyConfigured("No URL to redirect to. Provide a next_page.")
+
+
 def loginV(request):
     if request.user.is_authenticated == True:
         return redirect("/")
@@ -106,7 +122,7 @@ def loginV(request):
             )
             if user is not None:
                 login(request, user)
-                return redirect("/")
+                return redirect(get_success_url(request))
             else:
                 context = {
                     "error": True,
