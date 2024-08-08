@@ -1,5 +1,6 @@
 from django import template
 from ..models import Comment
+import html
 
 register = template.Library()
 
@@ -47,7 +48,7 @@ def display_replies(comment, request, csrftoken, level):
                 """
             htmlcode += "</div>"
             htmlcode += f"""
-                <p dir="auto" style="font-size: 16px; color: #666; margin-top: 10px;">{reply.comment}</p>
+                <p dir="auto" style="font-size: 16px; color: #666; margin-top: 10px;">{html.escape(reply.comment)}</p>
             """
 
             if request.user.is_authenticated:

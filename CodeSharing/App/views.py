@@ -347,7 +347,7 @@ def comments(request):
             elif "edit_content" in request.POST:
                 comment_id = request.POST["comment_id"]
                 if (
-                    request.user == Comment.objects.get(id=comment_id)
+                    request.user == Comment.objects.get(id=comment_id).user
                 ) or request.user.is_staff:
                     content = request.POST["edit_content"]
                     comment = get_object_or_404(Comment, id=comment_id)
